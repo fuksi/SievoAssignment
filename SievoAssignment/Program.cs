@@ -1,4 +1,4 @@
-﻿using System;
+﻿using CommandLine;
 
 namespace SievoAssignment
 {
@@ -6,7 +6,11 @@ namespace SievoAssignment
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Parser.Default.ParseArguments<EtlOptions>(args).WithParsed(opt =>
+            {
+                var etl = new Etl();
+                etl.Execute(opt);
+            });
         }
     }
 }
