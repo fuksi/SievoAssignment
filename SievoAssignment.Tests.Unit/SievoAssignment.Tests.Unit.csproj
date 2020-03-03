@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ExampleDataWithInvalidValue.tsv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ExampleData.tsv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

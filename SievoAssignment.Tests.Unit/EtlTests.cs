@@ -12,6 +12,7 @@ namespace SievoAssignment.Tests.Unit
     public class EtlTests
     {
         private string _testDataPath;
+        private string _testDataWithInvalidValuePath;
         private Etl _target;
         private Mock<ISievoLogger> _sievoLoggerMock;
         private string[] _headerFields;
@@ -21,6 +22,7 @@ namespace SievoAssignment.Tests.Unit
         public void Setup()
         {
             _testDataPath = Path.Join(Directory.GetCurrentDirectory(), "ExampleData.tsv");
+            _testDataWithInvalidValuePath = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidValue.tsv");
             _sievoLoggerMock = new Mock<ISievoLogger>();
             _target = new Etl(_sievoLoggerMock.Object);
 
@@ -62,6 +64,14 @@ namespace SievoAssignment.Tests.Unit
             _sievoLoggerMock.Verify(
                 m => m.Info(It.Is<string[]>(parts => parts[savingsAmountIdx] == "NULL" || parts[currencyIdx] == "NULL")), 
                 Times.Never());
+        }
+
+        [Test]
+        public void Execute_ValidArgsButInvalidCellValues_ThrowsArgumentException()
+        {
+            var args = new string[] { "--file", _testDataWithInvalidValuePath };
+            var ex = Assert.Throws<ArgumentException>(() => _target.Execute(args));
+            Assert.That(ex.Message.Contains("complexity"));
         }
     }
 }
