@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SievoAssignment
 {
@@ -8,10 +9,16 @@ namespace SievoAssignment
         {
             Console.WriteLine(msg);
         }
+
+        public void Info(string[] msgParts)
+        {
+            Console.WriteLine(string.Join('\t', msgParts));
+        }
     }
 
     public interface ISievoLogger
     {
         public void Info(string msg);
+        public void Info(string[] msgParts);
     }
 }
