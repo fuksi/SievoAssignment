@@ -6,11 +6,8 @@ namespace SievoAssignment
     {
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<EtlOptions>(args).WithParsed(opt =>
-            {
-                var etl = new Etl();
-                etl.Execute(opt);
-            });
+            var etl = new Etl();
+            etl.Execute(args);
         }
     }
 }
