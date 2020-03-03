@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SievoAssignment", "SievoAssignment\SievoAssignment.csproj", "{615C5F42-3899-4639-A700-228F535A973B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SievoAssignment.Tests.Unit", "SievoAssignment.Tests.Unit\SievoAssignment.Tests.Unit.csproj", "{BD849F07-0702-48BB-8281-9F9DA3C8269B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{615C5F42-3899-4639-A700-228F535A973B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{615C5F42-3899-4639-A700-228F535A973B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{615C5F42-3899-4639-A700-228F535A973B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{615C5F42-3899-4639-A700-228F535A973B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD849F07-0702-48BB-8281-9F9DA3C8269B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD849F07-0702-48BB-8281-9F9DA3C8269B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD849F07-0702-48BB-8281-9F9DA3C8269B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD849F07-0702-48BB-8281-9F9DA3C8269B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8683FA2F-B3C6-41EC-883C-5B3E5BD689B0}
+	EndGlobalSection
+EndGlobal
