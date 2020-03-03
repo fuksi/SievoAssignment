@@ -6,7 +6,7 @@ namespace SievoAssignment
     {
         static void Main(string[] args)
         {
-            var etl = new Etl();
+            var etl = new Etl(new SievoLogger());
             etl.Execute(args);
         }
     }

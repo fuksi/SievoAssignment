@@ -8,11 +8,17 @@ namespace SievoAssignment
 {
     public class Etl
     {
+        private ISievoLogger _sievoLogger;
+
+        public Etl(ISievoLogger sievoLogger)
+        {
+            _sievoLogger = sievoLogger;
+        }
+
         public void Execute(string[] args)
         {
             Parser.Default.ParseArguments<EtlOptions>(args).WithParsed(opt =>
             {
-                var etl = new Etl();
                 using var reader = new StreamReader(opt.File);
                 using var csv = new CsvReader(reader,
                     new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "\t" });
@@ -20,15 +26,14 @@ namespace SievoAssignment
                 while (csv.Read())
                 {
                     var line = csv.Context.RawRecord;
-                    if (string.IsNullOrEmpty(line))
+                    if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
                     {
                         continue;
                     }
 
-                    // Delegate output to another component so we test down stream
-                    if (line.StartsWith("#"))
+                    if (line.StartsWith("Project"))
                     {
-                        // Do sth with header line    
+                        _sievoLogger.Info(line);
                         continue;
                     }
 
