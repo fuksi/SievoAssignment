@@ -62,18 +62,29 @@ namespace SievoAssignment
                         continue;
                     }
 
+                    // Filter early by project id if applicable 
                     if (!string.IsNullOrEmpty(opt.Project)
                         && csv.GetField("Project") != opt.Project)
                     {
                         continue;
                     }
 
+                    // Process data rows
                     _orderedHeaderFields = csv.Context.HeaderRecord;
                     var rowValuesOrderedSameAsHeaders = _orderedHeaderFields
                         .Select(columnName =>
                         {
                             var cellValue = csv.GetField<string>(columnName);
 
+                            // Throw early if there is any invalid cell
+                            if (columnName == "Complexity" && !_allowedComplexities.Contains(cellValue))
+                            {
+                                throw new ArgumentException(@$"'{cellValue}' is an invalid complexity value. Allowed values are {string.Join(", ", _allowedComplexities)}");
+                            }
+                            if (columnName == "Start date")
+                            {
+                                DateTime.Parse(cellValue);
+                            }
                             if (columnName == "Savings amount")
                             {
                                 if (cellValue == "NULL")
@@ -91,19 +102,10 @@ namespace SievoAssignment
                                 cellValue = "";
                             }
 
-                            if (columnName == "Complexity" && !_allowedComplexities.Contains(cellValue))
-                            {
-                                throw new ArgumentException(@$"'{cellValue}' is an invalid complexity value. Allowed values are {string.Join(", ", _allowedComplexities)}");
-                            }
-
-                            if (columnName == "Start date")
-                            {
-                                DateTime.Parse(cellValue);
-                            }
-
                             return cellValue;
                         }).ToArray();
 
+                    // Output right away, unless sortByStartDate applies
                     if (opt.SortByStartDate)
                     {
                         rowsContainer.Add(rowValuesOrderedSameAsHeaders);

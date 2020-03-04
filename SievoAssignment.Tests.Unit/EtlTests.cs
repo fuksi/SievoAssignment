@@ -33,7 +33,7 @@ namespace SievoAssignment.Tests.Unit
             _sievoLoggerMock = new Mock<ISievoLogger>();
             _target = new Etl(_sievoLoggerMock.Object);
 
-            // Get headers and its order to locate target column during tests
+            // Get headers and their order to locate target column value during tests
             using var reader = new StreamReader(_testDataPath);
             using var csv = new CsvReader(reader,
                 new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "\t" });
@@ -47,6 +47,18 @@ namespace SievoAssignment.Tests.Unit
                     break;
                 }
             }
+        }
+
+
+        [Test]
+        public void Execute_InvalidFilePath_Throws()
+        {
+            var args = new string[] { "--file", _testDataPath.Replace(".tsv", "") };
+            Assert.Throws<FileNotFoundException>(() => _target.Execute(args));
+
+            var filePathWithInvalidDir = "things/dont/always/exist.tsv";
+            args = new string[] { "--file", filePathWithInvalidDir};
+            Assert.Throws<DirectoryNotFoundException>(() => _target.Execute(args));
         }
 
 
@@ -89,7 +101,7 @@ namespace SievoAssignment.Tests.Unit
             _sievoLoggerMock = new Mock<ISievoLogger>(MockBehavior.Strict);
             _target = new Etl(_sievoLoggerMock.Object);
 
-            // MockBehavior requires setup for all invocation
+            // MockBehavior requires setup for all invocations
             // we'll need 9 invocations for the current test data
             _sievoLoggerMock.Setup(x => x.Info(It.IsAny<string>()));
             for (var i = 0; i < 8; i++)
@@ -129,7 +141,8 @@ namespace SievoAssignment.Tests.Unit
             _target.Execute(args);
 
             // We can use strict behavior to verify that the invoked parameters are only from projectId 2
-            // but we can also simply verify that method was never invoked with any other parameters
+            // but, given we have done postitive tests, we can use negation strategy
+            // and simply verify that the method was never invoked with any other parameters
             _sievoLoggerMock.Verify(x => x.Info(It.Is<string[]>(parts => parts[0] != projectId)), Times.Never());
         }
 
@@ -141,14 +154,10 @@ namespace SievoAssignment.Tests.Unit
             Assert.That(ex.Message.Contains("complexity"));
 
             args = new string[] { "--file", _testDataWithInvalidSavingsAmount };
-            var ex2 = Assert.Throws<FormatException>(() => _target.Execute(args));
+            Assert.Throws<FormatException>(() => _target.Execute(args));
 
             args = new string[] { "--file", _testDataWithInvalidStartDate };
-            var ex3 = Assert.Throws<FormatException>(() => _target.Execute(args));
-
-            var invalidFilePath = "things/dont/always/exist.tsv";
-            args = new string[] { "--file", invalidFilePath};
-            var ex4 = Assert.Throws<DirectoryNotFoundException>(() => _target.Execute(args));
+            Assert.Throws<FormatException>(() => _target.Execute(args));
         }
     }
 }
