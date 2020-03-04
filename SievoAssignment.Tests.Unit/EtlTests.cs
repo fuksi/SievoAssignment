@@ -12,7 +12,9 @@ namespace SievoAssignment.Tests.Unit
     public class EtlTests
     {
         private string _testDataPath;
-        private string _testDataWithInvalidValuePath;
+        private string _testDataWithInvalidComplexity;
+        private string _testDataWithInvalidStartDate;
+        private string _testDataWithInvalidSavingsAmount;
         private Etl _target;
         private Mock<ISievoLogger> _sievoLoggerMock;
         private string[] _headerFields;
@@ -22,7 +24,9 @@ namespace SievoAssignment.Tests.Unit
         public void Setup()
         {
             _testDataPath = Path.Join(Directory.GetCurrentDirectory(), "ExampleData.tsv");
-            _testDataWithInvalidValuePath = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidValue.tsv");
+            _testDataWithInvalidComplexity = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidComplexity.tsv");
+            _testDataWithInvalidStartDate = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidStartDate.tsv");
+            _testDataWithInvalidSavingsAmount = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidSavingsAmount.tsv");
             _sievoLoggerMock = new Mock<ISievoLogger>();
             _target = new Etl(_sievoLoggerMock.Object);
 
@@ -69,9 +73,15 @@ namespace SievoAssignment.Tests.Unit
         [Test]
         public void Execute_ValidArgsButInvalidCellValues_ThrowsArgumentException()
         {
-            var args = new string[] { "--file", _testDataWithInvalidValuePath };
+            var args = new string[] { "--file", _testDataWithInvalidComplexity };
             var ex = Assert.Throws<ArgumentException>(() => _target.Execute(args));
             Assert.That(ex.Message.Contains("complexity"));
+
+            args = new string[] { "--file", _testDataWithInvalidSavingsAmount };
+            var ex2 = Assert.Throws<FormatException>(() => _target.Execute(args));
+
+            args = new string[] { "--file", _testDataWithInvalidStartDate };
+            var ex3 = Assert.Throws<FormatException>(() => _target.Execute(args));
         }
     }
 }

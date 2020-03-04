@@ -63,8 +63,19 @@ namespace SievoAssignment
                         {
                             var cellValue = csv.GetField<string>(columnName);
 
-                            if ((columnName == "Savings amount" || columnName == "Currency")
-                                && cellValue == "NULL")
+                            if (columnName == "Savings amount")
+                            {
+                                if (cellValue == "NULL")
+                                {
+                                    cellValue = "";
+                                } 
+                                else
+                                {
+                                    decimal.Parse(cellValue, CultureInfo.InvariantCulture);
+                                }
+                            }
+
+                            if (columnName == "Currency" && cellValue == "NULL")
                             {
                                 cellValue = "";
                             }
@@ -73,6 +84,11 @@ namespace SievoAssignment
                             {
                                 throw new ArgumentException(@$"'{cellValue}' is an invalid complexity value. 
                                     Allowed values are {string.Join(',', _allowedComplexities)}");
+                            }
+
+                            if (columnName == "Start date")
+                            {
+                                DateTime.Parse(cellValue);
                             }
 
                             return cellValue;
