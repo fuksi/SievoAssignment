@@ -2,6 +2,7 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace SievoAssignment
     public class Etl
     {
         private ISievoLogger _sievoLogger;
+        private string[] _orderedHeaderFields;
         private string[] _headerFields = new string[]
         {
             "Project",
@@ -42,14 +44,17 @@ namespace SievoAssignment
                 using var csv = new CsvReader(reader,
                     new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "\t" });
 
+                List<string[]> rowsContainer = new List<string[]>();
                 while (csv.Read())
                 {
+                    // Skip empty lines or comments
                     var line = csv.Context.RawRecord;
                     if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
                     {
                         continue;
                     }
 
+                    // Output header row
                     if (_headerFields.Any(headerField => line.StartsWith(headerField)))
                     {
                         csv.ReadHeader();
@@ -57,8 +62,8 @@ namespace SievoAssignment
                         continue;
                     }
 
-                    var headerColumns = csv.Context.HeaderRecord;
-                    var valuesOrderedSameAsHeaders = headerColumns
+                    _orderedHeaderFields = csv.Context.HeaderRecord;
+                    var rowValuesOrderedSameAsHeaders = _orderedHeaderFields
                         .Select(columnName =>
                         {
                             var cellValue = csv.GetField<string>(columnName);
@@ -94,7 +99,27 @@ namespace SievoAssignment
                             return cellValue;
                         }).ToArray();
 
-                    _sievoLogger.Info(valuesOrderedSameAsHeaders);
+                    if (opt.SortByStartDate)
+                    {
+                        rowsContainer.Add(rowValuesOrderedSameAsHeaders);
+                    } 
+                    else
+                    {
+                        _sievoLogger.Info(rowValuesOrderedSameAsHeaders);
+                    }
+                }
+
+                if (opt.SortByStartDate)
+                {
+                    var startDateColumnIndex = Array.IndexOf(_orderedHeaderFields, "Start date");
+                    rowsContainer.Sort((a, b) =>
+                    {
+                        var aStartDate = DateTime.Parse(a[startDateColumnIndex]);
+                        var bStartDate = DateTime.Parse(b[startDateColumnIndex]);
+                        return aStartDate < bStartDate ? -1 : 1;
+                    });
+
+                    rowsContainer.ForEach(r => _sievoLogger.Info(r));
                 }
             });
         }

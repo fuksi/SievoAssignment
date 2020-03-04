@@ -48,7 +48,7 @@ namespace SievoAssignment.Tests.Unit
 
 
         [Test]
-        public void Execute_ValidArgs_WriteToOutput()
+        public void Execute_ValidFilePath_WriteToOutput()
         {
             var args = new string[] { "--file", _testDataPath };
             _target.Execute(args);
@@ -68,6 +68,46 @@ namespace SievoAssignment.Tests.Unit
             _sievoLoggerMock.Verify(
                 m => m.Info(It.Is<string[]>(parts => parts[savingsAmountIdx] == "NULL" || parts[currencyIdx] == "NULL")), 
                 Times.Never());
+        }
+
+
+        [Test]
+        public void Execute_ValidFilePathAndSortByStartDateAsc_WriteToOutputWithAscOrder()
+        {
+            // MockBehavior strict allows us to verify order of calls
+            _sievoLoggerMock = new Mock<ISievoLogger>(MockBehavior.Strict);
+            _target = new Etl(_sievoLoggerMock.Object);
+
+            // MockBehavior requires setup for all invocation
+            // we'll need 9 invocations for the current test data
+            _sievoLoggerMock.Setup(x => x.Info(It.IsAny<string>()));
+            for (var i = 0; i < 8; i++)
+            {
+                _sievoLoggerMock.Setup(x => x.Info(It.IsAny<string[]>()));
+            }
+
+            var args = new string[] { "--file", _testDataPath, "--sortByStartDate" };
+            _target.Execute(args);
+
+            // Verify header row output to follow strict invovation order
+            _sievoLoggerMock.Verify(x => x.Info(It.Is<string>(msg => msg.Contains("Project"))));
+
+            // Verify the rest 
+            var expectedDatesInAscOrder = new List<string> { 
+                "2012-06-01",
+                "2012-06-01",
+                "2013-01-01",
+                "2013-01-01",
+                "2013-01-01",
+                "2013-01-01",
+                "2013-04-01",
+                "2014-01-01",
+            };
+
+            expectedDatesInAscOrder.ForEach(dateStr =>
+            {
+                _sievoLoggerMock.Verify(x => x.Info(It.Is<string[]>(parts => string.Join(',', parts).Contains(dateStr))));
+            });
         }
 
         [Test]
