@@ -62,6 +62,12 @@ namespace SievoAssignment
                         continue;
                     }
 
+                    if (!string.IsNullOrEmpty(opt.Project)
+                        && csv.GetField("Project") != opt.Project)
+                    {
+                        continue;
+                    }
+
                     _orderedHeaderFields = csv.Context.HeaderRecord;
                     var rowValuesOrderedSameAsHeaders = _orderedHeaderFields
                         .Select(columnName =>

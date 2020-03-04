@@ -111,6 +111,18 @@ namespace SievoAssignment.Tests.Unit
         }
 
         [Test]
+        public void Execute_ValidFilePathAndFilterbyProject_WriteToOutputOnlyForFilteredProject()
+        {
+            var projectId = "2";
+            var args = new string[] { "--file", _testDataPath, "--project", projectId };
+            _target.Execute(args);
+
+            // We can use strict behavior to verify that the invoked parameters are only from projectId 2
+            // but we can also simply verify that method was never invoked with any other parameters
+            _sievoLoggerMock.Verify(x => x.Info(It.Is<string[]>(parts => parts[0] != projectId)), Times.Never());
+        }
+
+        [Test]
         public void Execute_ValidArgsButInvalidCellValues_ThrowsArgumentException()
         {
             var args = new string[] { "--file", _testDataWithInvalidComplexity };
