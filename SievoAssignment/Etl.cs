@@ -93,8 +93,7 @@ namespace SievoAssignment
 
                             if (columnName == "Complexity" && !_allowedComplexities.Contains(cellValue))
                             {
-                                throw new ArgumentException(@$"'{cellValue}' is an invalid complexity value. 
-                                    Allowed values are {string.Join(',', _allowedComplexities)}");
+                                throw new ArgumentException(@$"'{cellValue}' is an invalid complexity value. Allowed values are {string.Join(', ', _allowedComplexities)}");
                             }
 
                             if (columnName == "Start date")
