@@ -145,6 +145,10 @@ namespace SievoAssignment.Tests.Unit
 
             args = new string[] { "--file", _testDataWithInvalidStartDate };
             var ex3 = Assert.Throws<FormatException>(() => _target.Execute(args));
+
+            var invalidFilePath = "things/dont/always/exist.tsv";
+            args = new string[] { "--file", invalidFilePath};
+            var ex4 = Assert.Throws<DirectoryNotFoundException>(() => _target.Execute(args));
         }
     }
 }
