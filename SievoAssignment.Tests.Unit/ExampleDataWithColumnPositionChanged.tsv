@@ -1,0 +1,10 @@
+﻿# A comment line
+Currency	Description	Start date	Category	Responsible	Savings amount	Complexity	Project
+NULL	Harmonize Lactobacillus acidophilus sourcing	2014-01-01 00:00:00.000	Dairy	Daisy Milks	NULL	Simple	2
+EUR	Substitute Crème fraîche with evaporated milk in ice-cream products	2013-01-01 00:00:00.000	Dairy	Daisy Milks	141415.942696	Moderate	3
+EUR	Substitute Crème fraîche with evaporated milk in ice-cream products	2013-01-01 00:00:00.000	Dairy	Daisy Milks	141415.942696	Moderate	3
+EUR	Decrease production related non-categorized side costs	2013-01-01 00:00:00.000	Dairy	Daisy Milks	11689.322459	Hazardous	4
+EUR	Decrease production related non-categorized side costs	2013-01-01 00:00:00.000	Dairy	Daisy Milks	11689.322459	Hazardous	4
+NULL	Stop using Kryptonite in production	2013-04-01 00:00:00.000	Dairy	Clark Kent	NULL	Moderate	5
+EUR	Black and white logo paper	2012-06-01 00:00:00.000	Office supplies	Clark Kent	4880.199567	Simple	6
+EUR	Black and white logo paper	2012-06-01 00:00:00.000	Office supplies	Clark Kent	4880.199567	Simple	6

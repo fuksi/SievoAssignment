@@ -18,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ExampleDataWithColumnPositionChanged.tsv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ExampleDataWithInvalidSavingsAmount.tsv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

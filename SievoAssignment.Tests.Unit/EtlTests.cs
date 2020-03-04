@@ -6,12 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace SievoAssignment.Tests.Unit
 {
     public class EtlTests
     {
         private string _testDataPath;
+        private string _testDataWithColumnPositionChanged;
         private string _testDataWithInvalidComplexity;
         private string _testDataWithInvalidStartDate;
         private string _testDataWithInvalidSavingsAmount;
@@ -24,6 +26,7 @@ namespace SievoAssignment.Tests.Unit
         public void Setup()
         {
             _testDataPath = Path.Join(Directory.GetCurrentDirectory(), "ExampleData.tsv");
+            _testDataWithColumnPositionChanged = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithColumnPositionChanged.tsv");
             _testDataWithInvalidComplexity = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidComplexity.tsv");
             _testDataWithInvalidStartDate = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidStartDate.tsv");
             _testDataWithInvalidSavingsAmount = Path.Join(Directory.GetCurrentDirectory(), "ExampleDataWithInvalidSavingsAmount.tsv");
@@ -50,24 +53,32 @@ namespace SievoAssignment.Tests.Unit
         [Test]
         public void Execute_ValidFilePath_WriteToOutput()
         {
-            var args = new string[] { "--file", _testDataPath };
-            _target.Execute(args);
+            var validFilePaths = new List<string> { _testDataPath, _testDataWithColumnPositionChanged };
+            validFilePaths.ForEach(path =>
+            {
+                var args = new string[] { "--file", path };
+                _target.Execute(args);
 
-            // Assert comments or empty string NOT in output
-            _sievoLoggerMock.Verify(
-                m => m.Info(It.Is<string>(msg => string.IsNullOrEmpty(msg) || msg.StartsWith("#"))), 
-                Times.Never());
+                // Assert comments or empty string NOT in output
+                _sievoLoggerMock.Verify(
+                    m => m.Info(It.Is<string>(msg => string.IsNullOrEmpty(msg) || msg.StartsWith("#"))),
+                    Times.Never());
 
-            // Assert header row in output
-            _sievoLoggerMock.Verify(m => m.Info(It.Is<string>(msg => msg.StartsWith("Project"))), 
-                Times.Once());
+                // Assert header row in output
+                var firstColumnInTestFiles = new List<string> { "Project", "Currency" };
+                _sievoLoggerMock.Verify(m => 
+                    m.Info(It.Is<string>(msg => firstColumnInTestFiles.Any(colName => msg.StartsWith(colName)))),
+                    Times.Once());
 
-            // Assert NULL value for Savings amount, Currency NOT in output
-            var savingsAmountIdx = Array.IndexOf(_headerFields, "Savings amount");
-            var currencyIdx = Array.IndexOf(_headerFields, "Currency");
-            _sievoLoggerMock.Verify(
-                m => m.Info(It.Is<string[]>(parts => parts[savingsAmountIdx] == "NULL" || parts[currencyIdx] == "NULL")), 
-                Times.Never());
+                // Assert NULL value for Savings amount, Currency NOT in output
+                var savingsAmountIdx = Array.IndexOf(_headerFields, "Savings amount");
+                var currencyIdx = Array.IndexOf(_headerFields, "Currency");
+                _sievoLoggerMock.Verify(
+                    m => m.Info(It.Is<string[]>(parts => parts[savingsAmountIdx] == "NULL" || parts[currencyIdx] == "NULL")),
+                    Times.Never());
+
+                _sievoLoggerMock.Reset();
+            });
         }
 
 
